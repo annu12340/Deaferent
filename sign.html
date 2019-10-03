@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Alexa Sign Language Translator</title>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style1.css">
+    <script src="dist/build.js"></script> 
+    
+</head>
+<body>
+
+  <div id="launchModal" class="modal">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <span id="close-modal">&times;</span>
+<img src='https://www.windowscentral.com/sites/wpcentral.com/files/styles/large/public/field/image/2017/11/ASL%202_0.jpg?itok=3ys7WAL7'>
+
+      </div>
+      
+    </div>
+  </div>
+
+  <video id="video" src='' muted autoplay playsinline></video>
+  <div class="split-left">
+    <div class="centered">
+      <h1 id="text" class="intro-steps">Phase 1<br><span class="subtext">Add the words that you would like to train</h1>
+      <div id="training-list">
+        <div id="example-list"></div>
+        <div id="add">
+          <br><br>
+          <form id="add-word" autocomplete="off">
+            <input type="text" id="new-word" placeholder="Add Training word">
+            <br/><br/>
+            <label>
+              <input type="checkbox" id="is-terminal-word">
+              Is it a terminal word?
+            </label>
+            <br/><br/>
+            <input type="submit" value="Add Word">
+             </form>
+        </div><br><br><br>
+        <p id="count"  style="font-size: 22px">Total: 2 words</p>
+        <div id="action-btn"></div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="split-right">
+    <div class="centered">
+      <div id="loader"></div>
+      <h1>
+        <span id="answerText"></span>
+        <span id="interimText"></span>
+      </h1>
+    </div>
+  </div>
+  
+  
+  
+
+</body>
+</html>

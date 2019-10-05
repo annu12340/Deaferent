@@ -1,55 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Deaferent</title>
-    <link href="https://fonts.googleapis.com/css?family=Lato:900" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="./style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Alexa Sign Language Translator</title>
+<link href="https://fonts.googleapis.com/css?family=Ubuntu&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style1.css">
+    <script src="dist/build.js"></script> 
+    
 </head>
-
 <body>
 
-    <div class="row text-center" id="welcome">
-        <p class="text"> <span class="text__first"><span class="text__word">Welcome to </span><span class="text__first-bg"></span></span>
-            <br/><span class="text__second"><span class="text__word">Deaferent  </span><span class="text__second-bg"></span></span>
-        </p>
+ 
 
+  <video id="video" src='' muted autoplay playsinline></video>
+  <div class="split-left">
+    <div class="centered">
+      <h1 id="text" class="intro-steps">Phase 1<br><span class="subtext">Add the words that you would like to train</h1>
+      <div id="training-list">
+        <div id="example-list"></div>
+        <div id="add">
+          <br><br>
+          <form id="add-word" autocomplete="off">
+            <input type="text" id="new-word" placeholder="Add Training word">
+            <br/><br/>
+            <label>
+              <input type="checkbox" id="is-terminal-word">
+              Is it a terminal word?
+            </label>
+            <br/><br/>
+            <input type="submit" value="Add Word" id="submit-btn">
+             </form>
+        </div><br><br><br>
+        <p id="count"  style="font-size: 22px">Total: 2 words</p>
+        <div id="action-btn"></div>
+      </div>
+      
     </div>
+  </div>
+  <div class="split-right">
+    <div class="centered">
 
-    <div class="row " id="about">        <div class="col-sm-12">
-        <h1 style="font-size: 65px;"  id="element-to-animate" class="animated">About Deaferent</h1></div>
-        <br> Most of us are lucky to hear the chirping of the birds, the sound of the rain, the rustling of the leaves, enjoy music etc. But not all!. Imagine a world without sound and the frustration of trying to express what you feel or need to others. This is the living nightmare that the deaf people have to endure through out their life.
-        <br>
-        <br>
-        <div class="col-sm-6">
-            <blockquote class="blockquote " style="line-height: 180%;font-size: 20px; ">
-                <p class="mb-0">"I do not care about not being able to listen to music or that my deafness has a negative effect on my career. I do not really care about birds chirping or the other sounds people think gets them to heaven and then drops them back safe on earth. I also do not worry about feeling lonely because it is just all quiet. But human interaction is something I crave for - the day to day casual conversations, being part of a group where I understand every joke that is being cracked and laugh with my mates without having to ask that nice person what it is about, going to a loud bar and actually make a conversation talking (not texting)"</p>
-                <footer class="blockquote-footer">Saraswathi Chandrasekaran <cite title="Source Title">I'm profoundly deaf.</cite></footer>
-            </blockquote>
-            <br>
-        </div>
-
-        <div class="col-sm-5"> <img  class="to_fade_up" src="https://image.freepik.com/free-photo/woman-hand-ear-listening-quiet-sound-isolated-white-background_38019-742.jpg"></div>
-        <div></div>
-
-        <div class="col-sm-12">There are over 28 million individuals like Saraswathi, for whom making a actual conversation is a hercules task. <b>Through deaferent, we aim
-to provide a platform for them to converse with ease. </b> Deaferent is a sign language translator which captures the signs shown by the user to text and it also performs speech to text convertion
-            <br><br>
-            <button class="center-block" class="animateMe" data-animation="fadeInUpBig" ><a href="sign.html" class="button" style="color:white">View Demo</a></button>
-
-        </div>
-
+      <h1>
+        <span id="answerText"></span>
+        <span id="interimText"></span>
+      </h1>
     </div>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/gsap/1.20.2/TweenMax.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/waypoints/4.0.1/jquery.waypoints.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+  </div>
   
-    <script src="./script.js"></script>
+  
+  
 
 </body>
-
 </html>

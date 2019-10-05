@@ -7779,9 +7779,7 @@ var MathBackendCPU = (function () {
     };
     MathBackendCPU.prototype.throwIfNoData = function (dataId) {
         if (!this.data.has(dataId)) {
-            throw new Error("CPU backend: No data found for this tensor. " +
-                "Did you change your backend in the middle of the program? " +
-                "New backends can't use Tensors created with previous backends");
+            throw new Error("CPU backend: No data found for this tensor. " );
         }
     };
     MathBackendCPU.prototype.slice = function (x, begin, size) {
@@ -9784,8 +9782,7 @@ var NDArrayMathGPU = (function (_super) {
     function NDArrayMathGPU(gpgpu, safeMode) {
         if (safeMode === void 0) { safeMode = false; }
         var _this = this;
-        console.warn('new NDArrayMathGPU() is deprecated. Please use ' +
-            'dl.setBackend(\'webgl\').');
+        console.warn('new NDArrayMathGPU() is deprecated. ');
         _this = _super.call(this, new MathBackendWebGL(gpgpu), safeMode) || this;
         return _this;
     }
@@ -13847,11 +13844,9 @@ var ConvOps = (function () {
             input3D = input.as3D(1, input.shape[0], input.shape[1]);
         }
         util.assert(input3D.rank === 3, "Error in conv1d: input must be rank 3, but got rank " + input3D.rank + ".");
-        util.assert(filter.rank === 3, "Error in conv1d: filter must be rank 3, but got rank " +
-            (filter.rank + "."));
+        util.assert(filter.rank === 3, "Error in conv1d: filter must be rank 3, but got rank " + (filter.rank + "."));
         if (dimRoundingMode != null) {
-            util.assert(util.isInt(pad), "Error in conv1d: pad must be an integer when using, " +
-                ("dimRoundingMode " + dimRoundingMode + " but got pad " + pad + "."));
+            util.assert(util.isInt(pad), "Error in conv1d: pad must be an integer when using, " + ("dimRoundingMode " + dimRoundingMode + " but got pad " + pad + "."));
         }
         util.assert(input3D.shape[2] === filter.shape[1], "Error in conv1d: depth of input (" + input3D.shape[2] + ") must match  " +
             ("input depth for filter " + filter.shape[1] + "."));
@@ -13909,16 +13904,6 @@ var ConvOps = (function () {
         }
         var inDepth = xShape4D[3];
         var outDepth = dy4D.shape[3];
-        util.assert(xShape4D.length === 4, "Error in conv2dDerInput: inShape must be length 4, but got length " +
-            (xShape4D.length + "."));
-        util.assert(dy4D.rank === 4, "Error in conv2dDerInput: dy must be rank 4, but got " +
-            ("rank " + dy4D.rank));
-        util.assert(filter.rank === 4, "Error in conv2dDerInput: filter must be rank 4, but got " +
-            ("rank " + filter.rank));
-        util.assert(inDepth === filter.shape[2], "Error in conv2dDerInput: depth of input (" + inDepth + ") must " +
-            ("match input depth for filter " + filter.shape[2] + "."));
-        util.assert(outDepth === filter.shape[3], "Error in conv2dDerInput: depth of output (" + outDepth + ") must" +
-            ("match output depth for filter " + filter.shape[3] + "."));
         if (dimRoundingMode != null) {
             util.assert(util.isInt(pad), "Error in conv2dDerInput: pad must be an integer when using, " +
                 ("dimRoundingMode " + dimRoundingMode + " but got pad " + pad + "."));
@@ -13940,16 +13925,6 @@ var ConvOps = (function () {
         if (dy4D.rank === 3) {
             dy4D = dy.as4D(1, dy.shape[0], dy.shape[1], dy.shape[2]);
         }
-        util.assert(x4D.rank === 4, "Error in conv2dDerFilter: input must be rank 4, but got shape " +
-            (x4D.shape + "."));
-        util.assert(dy4D.rank === 4, "Error in conv2dDerFilter: dy must be rank 4, but got shape " +
-            (dy4D.shape + "."));
-        util.assert(filterShape.length === 4, "Error in conv2dDerFilter: filterShape must be length 4, but got " +
-            (filterShape + "."));
-        util.assert(x4D.shape[3] === filterShape[2], "Error in conv2dDerFilter: depth of input " + x4D.shape[3] + ") must " +
-            ("match input depth in filter (" + filterShape[2] + "."));
-        util.assert(dy4D.shape[3] === filterShape[3], "Error in conv2dDerFilter: depth of dy (" + dy4D.shape[3] + ") must " +
-            ("match output depth for filter (" + filterShape[3] + ")."));
         if (dimRoundingMode != null) {
             util.assert(util.isInt(pad), "Error in conv2dDerFilter: pad must be an integer when using, " +
                 ("dimRoundingMode " + dimRoundingMode + " but got pad " + pad + "."));
@@ -13969,13 +13944,7 @@ var ConvOps = (function () {
             reshapedTo4D = true;
             input4D = input.as4D(1, input.shape[0], input.shape[1], input.shape[2]);
         }
-        util.assert(input4D.rank === 4, "Error in depthwiseConv2D: input must be rank 4, but got " +
-            ("rank " + input4D.rank + "."));
-        util.assert(filter.rank === 4, "Error in depthwiseConv2D: filter must be rank 4, but got rank " +
-            (filter.rank + "."));
-        util.assert(input4D.shape[3] === filter.shape[2], "Error in depthwiseConv2D: number of input channels " +
-            ("(" + input4D.shape[3] + ") must match the inChannels dimension in ") +
-            ("filter " + filter.shape[2] + "."));
+       
         if (dilations == null) {
             dilations = [1, 1];
         }
@@ -19699,11 +19668,10 @@ function mixkey(seed, key) {
   return tostring(key);
 }
 
-//
+
 // autoseed()
-// Returns an object for autoseeding, using window.crypto and Node crypto
-// module if available.
-//
+// Returns an object for autoseeding, using window.crypto and Node crypto module if available.
+
 function autoseed() {
   try {
     var out;
@@ -19735,9 +19703,8 @@ function tostring(a) {
 
 mixkey(math.random(), pool);
 
-// Nodejs and AMD support: export the implementation as a module using
-// either convention.
-//
+// Nodejs and AMD support: export the implementation as a module using either convention.
+
 if ((typeof module) == 'object' && module.exports) {
   module.exports = seedrandom;
   // When in node.js, try using crypto package for autoseeding.
@@ -19766,8 +19733,7 @@ if ((typeof module) == 'object' && module.exports) {
   var freeModule = typeof module == 'object' && module &&
     module.exports == freeExports && module;
 
-  // Detect free variable `global`, from Node.js or Browserified code,
-  // and use it as `root`
+  // Detect free variable `global`, from Node.js or Browserified code, and use it as `root`
   var freeGlobal = typeof global == 'object' && global;
   if (freeGlobal.global === freeGlobal || freeGlobal.window === freeGlobal) {
     root = freeGlobal;
@@ -19775,8 +19741,6 @@ if ((typeof module) == 'object' && module.exports) {
 
 
   var stringFromCharCode = String.fromCharCode;
-
-  // Taken from https://mths.be/punycode
   function ucs2decode(string) {
     var output = [];
     var counter = 0;
@@ -19791,8 +19755,7 @@ if ((typeof module) == 'object' && module.exports) {
         if ((extra & 0xFC00) == 0xDC00) { // low surrogate
           output.push(((value & 0x3FF) << 10) + (extra & 0x3FF) + 0x10000);
         } else {
-          // unmatched surrogate; only append this code unit, in case the next
-          // code unit is the high surrogate of a surrogate pair
+          // unmatched surrogate; only append this code unit, in case the next code unit is the high surrogate of a surrogate pair
           output.push(value);
           counter--;
         }
@@ -19803,7 +19766,6 @@ if ((typeof module) == 'object' && module.exports) {
     return output;
   }
 
-  // Taken from https://mths.be/punycode
   function ucs2encode(array) {
     var length = array.length;
     var index = -1;

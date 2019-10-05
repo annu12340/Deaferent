@@ -2,6 +2,7 @@
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
 var _deeplearnKnnImageClassifier = require('deeplearn-knn-image-classifier');
 var _deeplearn = require('deeplearn');
 var dl = _interopRequireWildcard(_deeplearn);
@@ -16,14 +17,14 @@ var TOPK = 10;
 var predictionThreshold = 0.98;
 
 var words = ["eliza", "what is", "other"];
-var endWords = [];
+var endWords = ["hello"];
 
 var Main = function () {
   function Main() {
     var _this2 = this;
+
     _classCallCheck(this, Main);
 
-    // Initiate variables
     this.infoTexts = [];
     this.training = -1; // -1 when no class is being trained
     this.videoPlaying = false;
@@ -40,16 +41,10 @@ var Main = function () {
     this.exampleListDiv = document.getElementById("example-list");
 
     this.knn = null;
-
     this.textLine = document.getElementById("text");
     this.video = document.getElementById('video');
-
     this.addWordForm = document.getElementById("add-word");
 
-    this.video.addEventListener('mousedown', function () {
-      main.pausePredicting();
-      _this2.trainingListDiv.style.display = "block";
-    });
 
     // add word to training example set
     this.addWordForm.addEventListener('submit', function (e) {
@@ -66,6 +61,7 @@ var Main = function () {
         if (checkbox.checked) {
           endWords.push(word);
         }
+
         document.getElementById("new-word").value = '';
         checkbox.checked = false;
 
@@ -73,6 +69,7 @@ var Main = function () {
       } else {
         alert("Duplicate word or no word entered");
       }
+
       return;
     });
 
@@ -166,7 +163,6 @@ var Main = function () {
         _this4.addWordForm.appendChild(p);
 
         _this4.loadKNN();
-
         _this4.createPredictBtn();
 
         _this4.textLine.innerText = "Phase 2";
@@ -183,7 +179,6 @@ var Main = function () {
 
       var totalTerminalWordsTrained = 0;
 
-
       for (var i = 0; i < words.length; i++) {
         if (endWords.includes(words[i])) {
           if (exampleCount[i] > 0) {
@@ -192,7 +187,6 @@ var Main = function () {
         }
       }
       console.log("totalTerminalWordsTrained",totalTerminalWordsTrained)
-
       return totalTerminalWordsTrained;
     }
   }, {
@@ -220,7 +214,6 @@ var Main = function () {
       var _this6 = this;
 
       this.knn = new _deeplearnKnnImageClassifier.KNNImageClassifier(words.length, TOPK);
-
       // Load knn model
       this.knn.load().then(function () {
         return _this6.startTraining();
@@ -235,6 +228,8 @@ var Main = function () {
   }, {
     key: 'createButtonList',
     value: function createButtonList(showBtn) {
+      //showBtn - true: show training btns, false:show only text
+
       // Clear List
       this.exampleListDiv.innerHTML = "";
 
@@ -449,7 +444,7 @@ var TextToSpeech = function () {
       
       } else {
        
-        this.ansText.innerText = "No query detected";
+        this.ansText.innerText = "No sign is shown";
         main.previousPrediction = -1;
       }
       this.currentPredictedWords = [];
@@ -3706,7 +3701,9 @@ var Engine = (function () {
             util.assert(y instanceof tensor_1.Tensor, 'The result y returned by f() must be a tensor.');
             var filteredTape = tape_1.getFilteredNodesXToY(_this.activeTape, xs, y);
             if (!allowNoGradients && filteredTape.length === 0 && xs.length > 0) {
-                throw new Error('Cannot compute gradient of y=f(x) with respect to x.  ' );
+                throw new Error('Cannot compute gradient of y=f(x) with respect to x. Make sure ' +
+                    'that the f you passed encloses all operations that lead from x ' +
+                    'to y.');
             }
             var accumulatedGradientMap = {};
             accumulatedGradientMap[y.id] = (dy == null) ? ops.ones(y.shape) : dy;
@@ -14816,10 +14813,7 @@ var PoolOps = (function () {
             input4D = input.as4D(1, input.shape[0], input.shape[1], input.shape[2]);
             dy4D = dy.as4D(1, dy.shape[0], dy.shape[1], dy.shape[2]);
         }
-        util.assert(dy4D.rank === 4, "Error in maxPoolBackprop: dy must be rank 4 but got rank " +
-            (dy4D.rank + "."));
-        util.assert(input4D.rank === 4, "Error in maxPoolBackprop: input must be rank 4 but got rank " +
-            (input4D.rank + "."));
+
         if (dimRoundingMode != null) {
             util.assert(util.isInt(pad), "Error in maxPoolBackprop: pad must be an integer when using, " +
                 ("dimRoundingMode " + dimRoundingMode + " but got pad " + pad + "."));
@@ -16930,11 +16924,23 @@ function backpropagateGradients(tensorAccumulatedGradientMap, filteredTape) {
     for (var i = filteredTape.length - 1; i >= 0; i--) {
         var node = filteredTape[i];
         var dy = tensorAccumulatedGradientMap[node.output.id];
+        if (node.gradient == null) {
+            throw new Error("Cannot compute gradient: gradient function not found " +
+                ("for " + node.name + "."));
+        }
         var inputGradients = node.gradient(dy);
-
+        for (var inputName in node.inputs) {
+            if (!(inputName in inputGradients)) {
+                throw new Error("Cannot backprop through input " + inputName + ". " +
+                    ("Available gradients found: " + Object.keys(inputGradients) + "."));
+            }
             var dx = inputGradients[inputName]();
             var x = node.inputs[inputName];
-
+            if (!util.arraysEqual(dx.shape, x.shape)) {
+                throw new Error("Error in gradient for op " + node.name + ". The gradient of input " +
+                    ("'" + inputName + "' has shape '" + dx.shape + "', which does not match ") +
+                    ("the shape of the input '" + x.shape + "'"));
+            }
             if (tensorAccumulatedGradientMap[x.id] == null) {
                 tensorAccumulatedGradientMap[x.id] = dx;
             }
@@ -18873,9 +18879,7 @@ exports.loadWeights = loadWeights;
 
 },{"./ops/ops":121,"./util":150}],153:[function(require,module,exports){
 // A library of seedable RNGs implemented in Javascript.
-//
 // Usage:
-//
 // var seedrandom = require('seedrandom');
 // var random = seedrandom(1); // or any seed.
 // var x = random();       // 0 <= x < 1.  Every bit is random.
@@ -18887,20 +18891,16 @@ exports.loadWeights = loadWeights;
 var alea = require('./lib/alea');
 
 // xor128, a pure xor-shift generator by George Marsaglia.
-// Period: 2^128-1.
 // Reported to fail: MatrixRank and LinearComp.
 var xor128 = require('./lib/xor128');
 
 // xorwow, George Marsaglia's 160-bit xor-shift combined plus weyl.
-// Period: 2^192-2^32
 // Reported to fail: CollisionOver, SimpPoker, and LinearComp.
 var xorwow = require('./lib/xorwow');
 
-// xorshift7, by François Panneton and Pierre L'ecuyer, takes
-// a different approach: it adds robustness by allowing more shifts
+// xorshift7, adds robustness by allowing more shifts
 // than Marsaglia's original three.  It is a 7-shift generator
 // with 256 bits, that passes BigCrush with no systmatic failures.
-// Period 2^256-1.
 // No systematic BigCrush failures reported.
 var xorshift7 = require('./lib/xorshift7');
 
@@ -18909,19 +18909,16 @@ var xorshift7 = require('./lib/xorshift7');
 // BigCrush with no systematic failures.  Its long period may
 // be useful if you have many generators and need to avoid
 // collisions.
-// Period: 2^4128-2^32.
 // No systematic BigCrush failures reported.
 var xor4096 = require('./lib/xor4096');
 
 // Tyche-i, by Samuel Neves and Filipe Araujo, is a bit-shifting random
 // number generator derived from ChaCha, a modern stream cipher.
 // https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
-// Period: ~2^127
 // No systematic BigCrush failures reported.
 var tychei = require('./lib/tychei');
 
 // The original ARC4-based prng included in this library.
-// Period: ~2^1600
 var sr = require('./seedrandom');
 
 sr.alea = alea;
@@ -19026,7 +19023,6 @@ if (module && module.exports) {
 
 },{}],155:[function(require,module,exports){
 // A Javascript implementaion of the "Tyche-i" prng algorithm by
-// Samuel Neves and Filipe Araujo.
 // See https://eden.dei.uc.pt/~sneves/pubs/2011-snfa2.pdf
 
 (function(global, module, define) {
@@ -19127,8 +19123,6 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-
-
 },{}],156:[function(require,module,exports){
 // A Javascript implementaion of the "xor128" prng algorithm by
 // George Marsaglia.  See http://www.jstatsoft.org/v08/i14/paper
@@ -19159,7 +19153,6 @@ function XorGen(seed) {
     // String seed.
     strseed += seed;
   }
-
   // Mix in string seed, then discard an initial batch of 64 values.
   for (var k = 0; k < strseed.length + 64; k++) {
     me.x ^= strseed.charCodeAt(k) | 0;
@@ -19210,8 +19203,6 @@ if (module && module.exports) {
   (typeof define) == 'function' && define   // present with an AMD loader
 );
 
-
-
 },{}],157:[function(require,module,exports){
 // A Javascript implementaion of Richard Brent's Xorgens xor4096 algorithm.
 //
@@ -19222,9 +19213,7 @@ if (module && module.exports) {
 // for each prng generated.  For background on the generator, see Brent's
 // paper: "Some long-period random number generators using shifts and xors."
 // http://arxiv.org/pdf/1004.3115v1.pdf
-//
-// Usage:
-//
+
 // var xor4096 = require('xor4096');
 // random = xor4096(1);                        // Seed with int32 or string.
 // assert.equal(random(), 0.1520436450538547); // (0, 1) range, 53 bits.
@@ -19784,7 +19773,9 @@ if ((typeof module) == 'object' && module.exports) {
     root = freeGlobal;
   }
 
+
   var stringFromCharCode = String.fromCharCode;
+
   // Taken from https://mths.be/punycode
   function ucs2decode(string) {
     var output = [];
@@ -19829,7 +19820,6 @@ if ((typeof module) == 'object' && module.exports) {
     }
     return output;
   }
-
   function checkScalarValue(codePoint) {
     if (codePoint >= 0xD800 && codePoint <= 0xDFFF) {
       throw Error(
@@ -19941,6 +19931,7 @@ if ((typeof module) == 'object' && module.exports) {
         throw Error('Invalid continuation byte');
       }
     }
+
     // 4-byte sequence
     if ((byte1 & 0xF8) == 0xF0) {
       byte2 = readContinuationByte();
@@ -19975,7 +19966,6 @@ if ((typeof module) == 'object' && module.exports) {
     'encode': utf8encode,
     'decode': utf8decode
   };
-
   // Some AMD build optimizers, like r.js, check for specific condition patterns like the following:
   if (
     typeof define == 'function' &&
@@ -19998,6 +19988,7 @@ if ((typeof module) == 'object' && module.exports) {
   } else { // in Rhino or a web browser
     root.utf8 = utf8;
   }
+
 }(this));
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})

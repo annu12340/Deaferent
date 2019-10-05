@@ -1,8 +1,4 @@
-body{
-  font-family: "Helvetica Neue", "sans-serif";
-  margin: 0;
-  padding: 0;
-}
+
 
 #video{
   transform: rotateY(180deg);
@@ -80,7 +76,22 @@ background-size:  cover;
 
 }
 
-/* If you want the content centered horizontally and vertically */
+
+#submit-btn{
+  outline:none;
+  height: 35px;
+  text-align: center;
+  width: 120px;
+  border-radius:40px;
+  background: #F2F0F0;
+  border: 2px solid #a53125;
+  color:#a53125;
+}
+
+#submit-btn:hover{
+  background:  #a53125;
+  color: white;
+}
 .centered {
   position: absolute;
   top: 50%;
@@ -94,97 +105,3 @@ background-size:  cover;
   margin-bottom: 30px;
 }
 
-
-#loader,
-#loader:before,
-#loader:after {
-  background: #000000;
-  -webkit-animation: load1 1s infinite ease-in-out;
-  animation: load1 1s infinite ease-in-out;
-  width: 1em;
-  height: 4em;
-}
-#loader {
-  color: #000000;
-  text-indent: -9999em;
-  margin: 88px auto;
-  position: relative;
-  font-size: 11px;
-  transform: translateZ(0);
-  animation-delay: -0.16s;
-  display: none;
-}
-#loader:before,
-#loader:after {
-  position: absolute;
-  top: 0;
-  content: '';
-}
-#loader:before {
-  left: -1.5em;
-  -webkit-animation-delay: -0.32s;
-  animation-delay: -0.32s;
-}
-#loader:after {
-  left: 1.5em;
-}
-@-webkit-keyframes load1 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 0;
-    height: 4em;
-  }
-  40% {
-    box-shadow: 0 -2em;
-    height: 5em;
-  }
-}
-@keyframes load1 {
-  0%,
-  80%,
-  100% {
-    box-shadow: 0 0;
-    height: 4em;
-  }
-  40% {
-    box-shadow: 0 -2em;
-    height: 5em;
-  }
-}
-
-/* The Modal (background) */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    left: 0;
-    top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    background-color: rgb(0,0,0,0.95);
-
-}
-
-.modal-header {
-    margin: 8%;
-
-  
-    align-items: center;
-
-}
-
-
-#close-modal {
-    color: white;
-    float: left;
-    font-size: 68px;
-    font-weight: bold;
-}
-
-#close-modal:hover,
-#close-modal:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
